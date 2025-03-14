@@ -29,7 +29,7 @@ And to install packages in project
 
 To add a dependency:
 
-    uv add crewai
+    uv add python-3.12
 
 
 
