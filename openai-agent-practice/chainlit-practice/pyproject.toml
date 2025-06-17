@@ -1,0 +1,21 @@
+[project]
+name = "chainlit-practice"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "wajidminhas", email = "shanitent667@gmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "chainlit>=2.5.5",
+    "google-generativeai>=0.8.5",
+    "openai-agents>=0.0.18",
+]
+
+[project.scripts]
+chainlit-practice = "chainlit_practice:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
