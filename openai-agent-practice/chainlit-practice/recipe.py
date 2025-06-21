@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from typing import cast
 import chainlit as cl
 from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
+from openai.types.responses import ResponseTextDeltaEvent
 from agents.run import RunConfig
 
 # Load the environment variables from the .env file
@@ -48,13 +49,15 @@ async def main(message: cl.Message):
     """Process incoming messages and generate responses."""
     # Retrieve the chat history from the session.
     history = cl.user_session.get("chat_history") or []
+    
+    msg = cl.Message(content="")
+    await msg.send()
 
     # Append the user's message to the history.
     history.append({"role": "user", "content": message.content})
 
     # Create a new message object for streaming
-    msg = cl.Message(content="")
-    await msg.send()
+    
 
     agent: Agent = cast(Agent, cl.user_session.get("agent"))
     config: RunConfig = cast(RunConfig, cl.user_session.get("config"))
@@ -66,7 +69,7 @@ async def main(message: cl.Message):
 
         # Stream the response token by token
         async for event in result.stream_events():
-            if event.type == "raw_response_event" and hasattr(event.data, 'delta'):
+            if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
                 token = event.data.delta
                 await msg.stream_token(token)
 
