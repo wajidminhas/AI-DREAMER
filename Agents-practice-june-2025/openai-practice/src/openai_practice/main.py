@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from agents import AsyncOpenAI, Runner, Agent, OpenAIChatCompletionsModel, function_tool , enable_verbose_stdout_logging, ModelSettings
 from agents.run import RunConfig
+from agents.agent import StopAtTools
 
 
 load_dotenv()
@@ -55,10 +56,12 @@ agent: Agent = Agent(
     model=model, 
     tools =[greet, get_weather],
     # tool_use_behavior="stop_on_first_tool",
-    model_settings=ModelSettings(tool_choice="auto"),
+    model_settings=ModelSettings(parallel_tool_calls=False),
+    # tool_use_behavior=StopAtTools(stop_at_tool_names=["greet"]),
+
     reset_tool_choice=False
     )
 
-result = Runner.run_sync(agent, "Hello from john doe", run_config=config, max_turns=1)
+result = Runner.run_sync(agent, "Hello from john doe, what's weather in jhelum", run_config=config, max_turns=2)
 print(result.final_output)
 
