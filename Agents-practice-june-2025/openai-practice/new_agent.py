@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, enable_verbose_stdout_logging, RunContextWrapper
+from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, enable_verbose_stdout_logging, RunContextWrapper, function_tool
 from agents.run import RunConfig
 from pydantic import BaseModel
 
@@ -30,7 +30,8 @@ def get_ai_prompt(ctx : RunContextWrapper[User], agent : Agent[User]) -> str:
     """
     print("\n[CONTEXT]" , ctx.context)
     print(f"\n[AGENT]" , agent)
-
+    user_context = User(name=ctx.context.name, age=ctx.context.age, city=ctx.context.city)
+    print(f"\n[USER CONTEXT] {user_context}")
     user_info = ctx.context
     user_name = user_info.name
     user_age = user_info.age
@@ -40,7 +41,10 @@ def get_ai_prompt(ctx : RunContextWrapper[User], agent : Agent[User]) -> str:
     print(f"\n[AGENT INSTRUCTIONS] {agent.instructions}")
     # print(f"\n[AGENT MODEL] {agent.model}")
 
-    return f"you are a helpfull assistent and reply user query"
+    return f"you are a helpfull assistent and reply user query, {user_context} " \
+    
+
+# @function_tool()
 
 
 external_client = AsyncOpenAI(
