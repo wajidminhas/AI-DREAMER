@@ -1,4 +1,4 @@
-from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, Runner, function_tool, enable_verbose_stdout_logging, ModelSettings
+from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, RunContextWrapper,Runner,StopAtTools, function_tool, enable_verbose_stdout_logging, ModelSettings
 from pprint import pprint
 import os
 import asyncio
@@ -19,12 +19,26 @@ base_url = os.getenv("BASE_URL")
 if base_url is None:
     raise ValueError("BASE_URL environment variable is not set.")
 
+from pydantic import BaseModel
+class User(BaseModel):
+    user_name: str
+    age: int
+
+user_data = ""
+def set_instrtuctios(ctx : RunContextWrapper[User],  agent : Agent)-> str:
+    """
+    Set instructions for the agent based on the context.
+    """
+    # global user_data 
+    user_data = f"User name: {ctx.context.user_name}, User age: {ctx.context.age}"
+    return f"You are a helpful assistant. {user_data} Your task is to assist the user with their queries. Respond in a friendly and informative manner."
+
 @function_tool
-async def greet(name: str) -> str:
+async def greet(u_name: str):
     """
     A simple function tool that greets the user.
     """
-    return f"Hello, {name}!"
+    return f"Hello, {u_name}!"
 
 
 @function_tool
@@ -44,18 +58,24 @@ external_client = AsyncOpenAI(
 
 model = OpenAIChatCompletionsModel(
     openai_client=external_client,
-    model="gemini-1.5-flash",
+    model="gemini-2.0-flash",
 )
+user_context = User(user_name="Alice", age=30)
 
 agent = Agent(
     name = "Helpful Assistant",
-    instructions="alway reply of user query in haiku format",
+    instructions=[set_instrtuctios],
     model = model,
-    tools = [greet, get_weather],
-    model_settings=ModelSettings(temperature=0.2, parallel_tool_calls=False)
+    # output_type=User,
+    # tools = [greet, get_weather]
+    # model_settings=ModelSettings(temperature=0.2, parallel_tool_calls=False)
+    # tool_use_behavior=StopAtTools(stop_at_tool_names=[get_weather])
 )
 
-result = Runner.run_sync(agent, "hi, greet to user, what is the weather in lahore?", )
 
+result = Runner.run_sync(agent, "hi, check the context i given you", context=user_context, )
 
 pprint(result.final_output)
+print("Done!")
+print(f"\nUser name: {user_context.user_name}\n")
+print(f"\nUser age: {user_context.age}")
