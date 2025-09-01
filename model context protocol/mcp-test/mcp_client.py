@@ -2,6 +2,7 @@
 from mcp import ClientSession
 from contextlib import AsyncExitStack
 from mcp.client.streamable_http import streamablehttp_client
+from mcp import types
 
 
 
@@ -33,16 +34,26 @@ class MCPClient:
     async def __aexit__(self, *args):
         await self.stack.aclose()
 
-    async def list_tools(self):
-        return (await self._sess.list_tools()).tools
+    async def list_tools(self)-> list[types.Tool]:
+        list_response: types.ListToolsResult = await self._sess.list_tools()
+        return list_response.tools
 
+    async def list_resources(self) -> list[types.Resource]:
+        list_response: types.ListResourcesResult = await self._sess.list_resources()
+        return list_response.resources          
     # This is a simple example of how to use the MCP client to list tools
 async def main():
+    
+    
     async with MCPClient("http://localhost:8000/mcp") as client:
         tools = await client.list_tools()
         print("TOOLS : ", tools)
         # for tool in tools:
             # print(f"Tool Name: {tool.name}, Description: {tool.description}")
+            
+        # List resources
+        resources = await client.list_resources()
+        print("RESOURCES : ", resources)
 import asyncio
 if __name__ == "__main__":
     asyncio.run(main())
