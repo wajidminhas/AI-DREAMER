@@ -11,8 +11,11 @@ headers = {
 body = {
     "jsonrpc": "2.0",
     "id": 1,
-    "method": "tools/list",
-    "params": {}
+    "method": "resources/templates/list",
+    # "params": {
+    #     "uri": "file:///docs/python_docs.py"
+    # }
+    
 }
 
 result = requests.post(url=url, headers=headers, json=body)

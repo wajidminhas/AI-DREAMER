@@ -16,5 +16,11 @@ async def tool_subtract(a: int, b:int)->str:
     """plus two number / plus function tool"""
     return f"you answer is {a-b}"
 
+@app.resource('file:///docs/python_docs.py', name="python_docs")
+def read_data_from_file():
+    """Read data from a local file"""
+    with open("docs/python_docs.py") as f:
+        content = f.read()  
+        return content
 
 mcp_app = app.streamable_http_app()
