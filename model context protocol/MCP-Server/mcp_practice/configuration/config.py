@@ -41,7 +41,16 @@ body_read_resources = {
     "uri": "file:///myResources/my_python.py"
   }
 }
-result = requests.post(url, headers=headers, json=body_read_resources)
+
+body_resource_template = {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "resources/templates/list",
+    "params": {
+    
+    }
+}
+result = requests.post(url, headers=headers, json=body_resource_template)
 
 
 response = result.text
