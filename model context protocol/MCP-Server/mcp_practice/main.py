@@ -1,15 +1,19 @@
-from mcp.server.fastmcp import FastMCP
+from mcp.types import SamplingMessage, TextContent
+from mcp.server.fastmcp import FastMCP, Context
 from mcpTool.mcp_tool import plus_tool, minus_tool
 from myResources.my_resouce_method import read_docs, read_docs_dynamic
+from mcp.server.session import ServerSession
 
 
 app = FastMCP(name = "mcp-practice", stateless_http = True)
 
 @app.tool()
-async def addition(a: int, b: int) -> str:
+async def addition(a: int, b: int, ctx:Context[ServerSession, None] ) -> str:
     """Add two integers / addition tool, returns the sum of a and b / addition(a, b)"""
-    return plus_tool(a, b)
-
+    prompt = plus_tool(a, b)
+    result = await ctx.session.create_message(messages=[
+        SamplingMessage(role="user", context=TextContent(type="text", text=prompt))
+    ], max_tokens=100)
 
 @app.tool()
 async def subtraction(a: int, b: int) -> str:
