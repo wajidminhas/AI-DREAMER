@@ -12,8 +12,12 @@ async def addition(a: int, b: int, ctx:Context[ServerSession, None] ) -> str:
     """Add two integers / addition tool, returns the sum of a and b / addition(a, b)"""
     prompt = plus_tool(a, b)
     result = await ctx.session.create_message(messages=[
-        SamplingMessage(role="user", context=TextContent(type="text", text=prompt))
+        SamplingMessage(role="user", content=TextContent(type="text", text=prompt))
     ], max_tokens=100)
+
+    if result.content.type == "text":
+        return result.content.text
+    return str(result.content)
 
 @app.tool()
 async def subtraction(a: int, b: int) -> str:

@@ -5,6 +5,8 @@ from typing import Optional
 from contextlib import AsyncExitStack
 import asyncio
 from mcp.client.streamable_http import streamablehttp_client
+from mcp.shared.context import RequestContext
+from mcp.types import CreateMessageRequestParams, CreateMessageResult, TextContent
 
 class MCPClient:
     def __init__(self, url: str):
@@ -12,12 +14,18 @@ class MCPClient:
         self.exit_stack = AsyncExitStack()
         self.url = url
 
+    async def mock_llm(self, context : RequestContext[ClientSession, None], params : CreateMessageRequestParams)-> CreateMessageResult:
+        # print(f"Mock LLM called with params: {params.messages}")
+        return CreateMessageResult(
+            role="assistant", 
+            content=TextContent(type="text", text="Hello world from LLM"), 
+            model="gemini-1.5")
 
 # " this is an async context manager "
     async def __aenter__(self):
         print("Entering the session")
         read, write, _ = await self.exit_stack.enter_async_context(streamablehttp_client(self.url))
-        self.session = await self.exit_stack.enter_async_context(ClientSession(read, write))
+        self.session = await self.exit_stack.enter_async_context(ClientSession(read, write, sampling_callback=self.mock_llm))
         await self.session.initialize()
         return self
     
