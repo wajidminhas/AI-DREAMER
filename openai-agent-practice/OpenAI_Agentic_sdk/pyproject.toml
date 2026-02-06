@@ -1,0 +1,10 @@
+[project]
+name = "openai-agentic-sdk"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai-agents>=0.8.0",
+    "python-decouple>=3.8",
+]
