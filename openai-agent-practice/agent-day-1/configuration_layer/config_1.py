@@ -12,7 +12,6 @@ load_dotenv()
 key = os.getenv("GEMINI_API_KEY")
 base_url = os.getenv("BASE_URL")
 
-print(f"GEMINI_API_KEY: {key}")
 
 gemini_client = AsyncOpenAI(api_key=key, base_url=base_url)
 
