@@ -1,0 +1,8 @@
+
+
+
+# .gitignore has this:
+.env
+.venv
+__pycache__
+*.pyc

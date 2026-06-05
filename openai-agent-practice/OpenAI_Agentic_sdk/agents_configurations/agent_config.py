@@ -8,6 +8,6 @@ BASE_URL = config("BASE_URL", default="https://generativelanguage.googleapis.com
 
 gemini_client = AsyncOpenAI(api_key=GEMINI_API_KEY, base_url=BASE_URL)
 
-MODEL = OpenAIChatCompletionsModel(
+GEMINI_MODEL = OpenAIChatCompletionsModel(
     openai_client=gemini_client, model="gemini-2.5-flash"
 )
