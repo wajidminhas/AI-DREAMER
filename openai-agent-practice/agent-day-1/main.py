@@ -1,12 +1,52 @@
 
+# from agents import Runner
+
+# # from runner_layer.runner_1 import result
+# from agent_layer.agent_1 import shopping_agent
+
+# res = Runner.run_sync(
+#     starting_agent=shopping_agent,
+#     input="Find me a laptop and check its price"
+# )
+
+# print("Final Result:", res.final_output)
+
+# ----------------------------- Multiple Agents with Triage -----------------------------
+
+import time
+
+from agent_layer.agent_2 import triage_agent
 from agents import Runner
 
-# from runner_layer.runner_1 import result
-from agent_layer.agent_1 import shop_agent
+print("🤖 Multi-Agent System Starting...\n")
 
-res = Runner.run_sync(
-    starting_agent=shop_agent,
-    input="Find me a laptop and check its price"
+# Test 1 — Shopping query
+result = Runner.run_sync(
+    starting_agent=triage_agent,
+    input="Find me a laptop under $500"
 )
+print("Test 1 - Shopping:")
+print(result.final_output)
+print("\n" + "="*50 + "\n")
 
-print("Final Result:", res.final_output)
+time.sleep(30)  # Just to separate the outputs clearly
+
+# Test 2 — Support query
+result = Runner.run_sync(
+    starting_agent=triage_agent,
+    input="My order arrived damaged, I want to complain"
+)
+print("Test 2 - Support:")
+print(result.final_output)
+print("\n" + "="*50 + "\n")
+
+
+time.sleep(30)  # Just to separate the outputs clearly
+
+# Test 3 — Billing query
+result = Runner.run_sync(
+    starting_agent=triage_agent,
+    input="I was charged twice for my order"
+)
+print("Test 3 - Billing:")
+print(result.final_output)
