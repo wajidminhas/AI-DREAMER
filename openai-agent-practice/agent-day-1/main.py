@@ -15,38 +15,49 @@
 
 import time
 
-from agent_layer.agent_2 import triage_agent
-from agents import Runner
+from agent_layer.agent_2 import triage_agent, support_agent, billing_agent, shopping_agent
+from agent_layer.agent_3 import block_bad_words
+from agents import InputGuardrailTripwireTriggered, Runner
 
 print("🤖 Multi-Agent System Starting...\n")
 
 # Test 1 — Shopping query
-result = Runner.run_sync(
-    starting_agent=triage_agent,
-    input="Find me a laptop under $500"
-)
-print("Test 1 - Shopping:")
-print(result.final_output)
-print("\n" + "="*50 + "\n")
+# result = Runner.run_sync(
+#     starting_agent=triage_agent,
+#     input="Find me a laptop under $500"
+# )
+# print("Test 1 - Shopping:")
+# print(result.final_output)
+# print("\n" + "="*50 + "\n")
 
-time.sleep(30)  # Just to separate the outputs clearly
+# time.sleep(30)  # Just to separate the outputs clearly
 
-# Test 2 — Support query
-result = Runner.run_sync(
-    starting_agent=triage_agent,
-    input="My order arrived damaged, I want to complain"
-)
-print("Test 2 - Support:")
-print(result.final_output)
-print("\n" + "="*50 + "\n")
+# # Test 2 — Support query
+# result = Runner.run_sync(
+#     starting_agent=triage_agent,
+#     input="My order arrived damaged, I want to complain"
+# )
+# print("Test 2 - Support:")
+# print(result.final_output)
+# print("\n" + "="*50 + "\n")
 
 
-time.sleep(30)  # Just to separate the outputs clearly
+# time.sleep(30)  # Just to separate the outputs clearly
 
-# Test 3 — Billing query
-result = Runner.run_sync(
-    starting_agent=triage_agent,
-    input="I was charged twice for my order"
-)
-print("Test 3 - Billing:")
-print(result.final_output)
+# # Test 3 — Billing query
+# result = Runner.run_sync(
+#     starting_agent=triage_agent,
+#     input="I was charged twice for my order"
+# )
+# print("Test 3 - Billing:")
+# print(result.final_output)
+
+
+try:
+    result = Runner.run_sync(
+        starting_agent=shopping_agent,
+        input="Find me a laptop under $500"
+    )
+    print(result.final_output)
+except InputGuardrailTripwireTriggered:
+    print("🛑 Blocked! This message was not allowed.")

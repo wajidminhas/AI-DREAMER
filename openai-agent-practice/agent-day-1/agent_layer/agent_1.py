@@ -19,5 +19,6 @@ shopping_agent = Agent(
     - Recommend best option based on budget
     - Be concise and helpful
     """,
-    tools=[search_product, check_price]
+    tools=[search_product, check_price],
+    input_guardrails=["block_bad_words"]
 )
