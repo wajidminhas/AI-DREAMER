@@ -18,6 +18,9 @@ import time
 from agent_layer.agent_2 import triage_agent, support_agent, billing_agent, shopping_agent
 from agent_layer.agent_3 import block_bad_words
 from agents import InputGuardrailTripwireTriggered, Runner
+import asyncio
+from runner_layer.runner_4 import run_conversation
+from runner_layer.runner_5 import run_with_context
 
 print("🤖 Multi-Agent System Starting...\n")
 
@@ -53,11 +56,17 @@ print("🤖 Multi-Agent System Starting...\n")
 # print(result.final_output)
 
 
-try:
-    result = Runner.run_sync(
-        starting_agent=shopping_agent,
-        input="Find me a laptop under $500"
-    )
-    print(result.final_output)
-except InputGuardrailTripwireTriggered:
-    print("🛑 Blocked! This message was not allowed.")
+# try:
+#     result = Runner.run_sync(
+#         starting_agent=shopping_agent,
+#         input="Find me a laptop under $500"
+#     )
+#     print(result.final_output)
+# except InputGuardrailTripwireTriggered:
+#     print("🛑 Blocked! This message was not allowed.")
+
+
+
+
+if __name__ == "__main__":
+    asyncio.run(run_with_context())
