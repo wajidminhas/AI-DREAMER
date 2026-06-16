@@ -69,4 +69,8 @@ print("🤖 Multi-Agent System Starting...\n")
 
 
 if __name__ == "__main__":
-    asyncio.run(run_with_context())
+    asyncio.run(run_with_context(
+        user_id="user_001",
+        user_name="Ahmad",
+        tier="vip",
+    ))

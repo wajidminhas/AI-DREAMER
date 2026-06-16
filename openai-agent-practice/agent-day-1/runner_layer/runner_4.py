@@ -10,25 +10,31 @@ from agent_layer.agent_4 import memory_agent
 # result = Runner.run_sync(starting_agent=agent, input="Hello, what about agentic ai, describe yourself?")
 # print(result.final_output)
 
+MAX_HISTORY = 20
 
 async def run_conversation():
+
     
-    history = []
     
     while True:
+        history = []
         user_input = input("User:").strip()
         if user_input.lower() in ["exit", "quit"]:
             print("Exiting conversation.")
             break
         history.append({"role": "user", "content": user_input})
         
+        if len(history) > MAX_HISTORY:
+            history = history[-MAX_HISTORY:]
+        
         result = await Runner.run(
             starting_agent=memory_agent,
             input=history
         )
         
-        assistent_message = result.final_output
-        print(f"Assistant:, {assistent_message}\n")
+        response = result.final_output
+        print(f"\nAgent: {response}\n")
         
-        history.append({"role": "assistant", "content": assistent_message})
+        history.append({"role": "assistant", "content": response})
+
         
