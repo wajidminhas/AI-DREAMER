@@ -1,12 +1,12 @@
 from agents import Agent
-from configuration_layer.config_1 import gemini_model
+from configuration_layer.config_1 import gemini_model, groq_model
 from tools_layer.tools_4 import remember_preference, recall_preferences
 
 
 
 context_agent = Agent(
     name="context_agent",
-    model=gemini_model,
+    model=groq_model,
     instructions="""
     You are a personalized shopping assistant.
     The user's name, tier, and cart are available in your context.

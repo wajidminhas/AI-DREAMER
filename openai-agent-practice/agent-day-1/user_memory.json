@@ -6,7 +6,18 @@
   },
   "user": {
     "preferences": [
+      "Loves Android phones with great cameras and long battery life",
       "Loves Android phones with great cameras and long battery life"
+    ]
+  },
+  "user123": {
+    "preferences": [
+      "Android phones with great cameras and long battery life"
+    ]
+  },
+  "user's ID": {
+    "preferences": [
+      "Android phones with great cameras and long battery life"
     ]
   }
 }

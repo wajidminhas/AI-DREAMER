@@ -10,7 +10,7 @@ async def run_with_context(user_id : str, user_name : str, tier : str = "regular
         tier=tier
     )
     
-    user_input = "I really love Android phones with great cameras and long battery life."
+    user_input = "Can you recommend me a phone?"
     
     print(f"\n Running context-aware agent for {user_name} with tier {tier} and user_id {user_id}\n")
     result = await Runner.run(
