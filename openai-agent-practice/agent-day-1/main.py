@@ -21,6 +21,7 @@ from agents import InputGuardrailTripwireTriggered, Runner
 import asyncio
 from runner_layer.runner_4 import run_conversation
 from runner_layer.runner_5 import run_with_context
+from runner_layer.runner_6 import run_pipeline
 
 print("🤖 Multi-Agent System Starting...\n")
 
@@ -77,12 +78,15 @@ print("🤖 Multi-Agent System Starting...\n")
 
 
 import asyncio
-from runner_layer.runner_05 import run_day5_pipeline
+from runner_layer.runner_6 import run_pipeline
+
+# if __name__ == "__main__":
+#     asyncio.run(run_day5_pipeline(
+#         user_query="I want a smartphone under $700 with good camera",
+#         user_id="user_001",
+#         user_name="Ahmad",
+#         tier="vip",
+#     ))
 
 if __name__ == "__main__":
-    asyncio.run(run_day5_pipeline(
-        user_query="I want a smartphone under $700 with good camera",
-        user_id="user_001",
-        user_name="Ahmad",
-        tier="vip",
-    ))
+    asyncio.run(run_pipeline())

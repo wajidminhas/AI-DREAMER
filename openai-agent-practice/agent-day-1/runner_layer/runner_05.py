@@ -2,23 +2,36 @@
 
 
 from agents import Runner
-from agent_layer.agent_05 import search_agent
+from agent_layer.agent_05 import search_agent, formatter_agent
 from agent_layer.agent_005 import checkout_agent
 
 from context_layer.shopping_day4 import ShoppingContext
 from schemas.shopping_schemas import SearchResult, OrderIntent
 
 
-async def run_search(user_query: str, ctx: ShoppingContext) -> SearchResult:
-    print(f"\n[Search Agent] Processing: '{user_query}'")
 
-    result = await Runner.run(
+async def run_search(user_query: str, ctx: ShoppingContext) -> SearchResult:
+    # Step 1 — search
+    print(f"[Search Agent] Searching for: {user_query}")    
+    
+    
+    raw_result = await Runner.run(
         search_agent,
         input=user_query,
         context=ctx,
     )
+    raw_text = raw_result.final_output
+    print(f"\n[Search Agent] Raw results fetched.")
 
-    search_result: SearchResult = result.final_output
+    # Step 2 — format raw text into typed Pydantic model
+    print(f"[Formatter Agent] Structuring results...")
+    format_result = await Runner.run(
+        formatter_agent,
+        input=f"User query: {user_query}\n\nRaw search results:\n{raw_text}",
+        context=ctx,
+    )
+
+    search_result: SearchResult = format_result.final_output
 
     print(f"\n Query understood: {search_result.query_understood}")
     print(f" Recommendations found: {len(search_result.recommendations)}")

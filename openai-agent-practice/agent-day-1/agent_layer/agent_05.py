@@ -29,6 +29,26 @@ search_agent = Agent(
     If you need more info, set follow_up_question.
     Always populate all fields in your response.
     """,
-    tools=[search_products, get_product_detail],
+    tools=[search_products, get_product_detail]
+)
+
+
+formatter_agent = Agent(
+    name="formatter_agent",
+    model=groq_model,
+    instructions="""
+    You receive raw product search results as plain text.
+    Your job is to structure them into a clean typed response.
+
+    Scoring guide for recommendation_score:
+    - 0.9-1.0 = perfect match
+    - 0.7-0.9 = good match
+    - 0.5-0.7 = partial match
+    - below 0.5 = poor match
+
+    Always populate all fields. Use product ID from the raw text.
+    If budget was mentioned and no product fits, set follow_up_question.
+    """,
+    # NO tools here
     output_type=SearchResult,
 )
