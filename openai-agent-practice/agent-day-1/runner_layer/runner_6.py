@@ -39,6 +39,7 @@ import asyncio
 from agents import Runner
 from agent_layer.agent_6 import streaming_agent
 from context_layer.shopping_day4 import ShoppingContext  # existing Day 4 context dataclass
+from openai.types.responses import ResponseTextDeltaEvent
 
 
 async def run_streamed(query: str, ctx: ShoppingContext) -> str:
@@ -52,7 +53,7 @@ async def run_streamed(query: str, ctx: ShoppingContext) -> str:
     final_text_parts: list[str] = []
     async for event in result.stream_events():
         # 1. Raw token deltas -- the actual text being generated, piece by piece
-        if event.type == "raw_response_event" and isinstance(event.data, "delta"):
+        if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
             delta = event.data.delta
             if isinstance(delta, str):
                 print(delta, end="", flush=True)
