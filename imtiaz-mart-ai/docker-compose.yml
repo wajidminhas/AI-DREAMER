@@ -1,0 +1,49 @@
+
+
+version: "3.8"
+
+services:
+  # ─── Application ───────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql+asyncpg://imtiaz:imtiaz@postgres:5432/imtiaz
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - postgres
+    command: uv run uvicorn imtiaz_mart_ai.main:app --reload --host 0.0.0.0 --port 8000
+
+  # ─── Redis (Cache + Session Store) ─────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  # ─── PostgreSQL (Persistent Storage) ───────────
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: imtiaz
+      POSTGRES_PASSWORD: imtiaz
+      POSTGRES_DB: imtiaz
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  redis_data:
+  postgres_data:
