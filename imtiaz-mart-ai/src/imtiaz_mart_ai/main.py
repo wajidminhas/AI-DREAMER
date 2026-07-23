@@ -1,33 +1,31 @@
 """
-Application entry point — MINIMAL VERSION.
+Application entry point.
 
-This main.py ONLY imports what exists right now:
-- settings (we just created it)
-- FastAPI (from pyproject.toml dependencies)
+Responsibilities:
+1. Create FastAPI application
+2. Configure middleware
+3. Register API routers
+4. Handle startup/shutdown events
 
-NO redis, NO logging module, NO api router yet.
-We add them one by one as we create each file.
+NO business logic here. NO agent definitions here.
 """
 
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from imtiaz_mart_ai.config.settings import get_settings
+from imtiaz_mart_ai.api.v1.router import api_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Lifespan events: startup and shutdown.
-    
-    Right now this does nothing except print a message.
-    We'll add Redis connection here later.
-    """
+    """Startup and shutdown events."""
     settings = get_settings()
     print(f"🚀 Starting {settings.APP_NAME} v{settings.APP_VERSION}")
     
-    yield  # Application runs here
+    yield
     
     print("🛑 Shutting down")
 
@@ -41,25 +39,32 @@ def create_app() -> FastAPI:
         version=settings.APP_VERSION,
         description="Agentic AI backend for Imtiaz Mart",
         lifespan=lifespan,
+        docs_url="/docs",
+        redoc_url="/redoc",
     )
+    
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    
+    # Register v1 API routes
+    app.include_router(api_router, prefix="/v1")
     
     return app
 
 
-# Global app instance for uvicorn
 app = create_app()
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 async def root():
-    """Root endpoint."""
+    """Root redirect to API documentation."""
     return {
         "message": "Welcome to Imtiaz Mart AI",
-        "status": "running",
+        "docs": "/docs",
+        "health": "/v1/health",
     }
-
-
-@app.get("/health")
-async def health():
-    """Health check endpoint."""
-    return {"status": "healthy"}
